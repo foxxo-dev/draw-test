@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drawing App</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: black;
+        font-family: 'Roboto', 'Helvetica', sans-serif;
+        overflow: hidden;
+      }
+      canvas#cnvs {
+        width: 100vw;
+        height: 100vh;
+      }
+      #choises {
+        position: fixed;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 5rem;
+        max-width: 40rem;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 2rem;
+        filter: drop-shadow(0 0 10px black);
+        gap: 2rem;
+      }
+      #clr {
+        all: unset;
+        width: 3rem;
+        aspect-ratio: 1;
+        filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.507));
+        border-radius: 100vw;
+        overflow: hidden;
+      }
+      button {
+        all: unset;
+        height: calc(100% - 1rem);
+        aspect-ratio: 1;
+
+        box-shadow: 0 0 4px 4px rgba(0, 0, 0, 0.507);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        opacity: 0.5;
+        border-radius: 0.75rem;
+      }
+      .selected {
+        opacity: 1;
+      }
+      input {
+        font-size: 9px !important;
+        line-height: 1 !important;
+        width: 10000000000vw;
+      }
+      #clear {
+        width: 5rem;
+        height: 5rem;
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: white;
+        border-radius: 100000vw;
+        opacity: 1;
+      }
+      #save {
+        width: 5rem;
+        height: 5rem;
+        position: fixed;
+        bottom: 1rem;
+        left: 1rem;
+        background: white;
+        border-radius: 100000vw;
+        opacity: 1;
+      }
+      h1 {
+        position: absolute;
+        left: 0.5rem;
+        top: 0.5rem;
+        color: white;
+        line-height: 1;
+        margin: 0;
+        filter: drop-shadow(0 0 14px rgba(0, 0, 0, 0.9));
+        pointer-events: none;
+      }
+      #overlay {
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        z-index: 923840983290849032894;
+        pointer-events: none;
+        border: none;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="overlay" />
+    <h1>Drawing Test</h1>
+    <button id="clear">CLEAR</button>
+    <button id="save">SAVE</button>
+
+    <div id="choises">
+      <input type="color" id="clr" value="#ffffff" />
+      <button id="penTool" class="selected">PEN</button>
+      <button id="rectTool" class="">RECT</button>
+      <button id="textTool" class="">TEXT</button>
+      <button id="eraserTool" class="">ERASE</button>
+    </div>
+  </body>
+  <script src="main.js"></script>
+</html>
