@@ -1,3 +1,27 @@
+var lastSelected = 'pen';
+
+if (localStorage.getItem('lastSelected') == null) {
+  localStorage.setItem('lastSelected', lastSelected);
+}
+
+lastSelected = localStorage.getItem('lastSelected');
+
+function updateSelected(tool) {
+  localStorage.setItem('lastSelected', tool);
+  lastSelected = tool;
+  tool = lastSelected;
+}
+
+function downloadURI(uri, name) {
+  var link = document.createElement('a');
+  link.download = name;
+  link.href = uri;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  delete link;
+}
+
 var isMouseDown = false;
 var clr_choise = document.getElementById('clr');
 var color = 'white';
@@ -6,12 +30,37 @@ var tool = 'pen';
 var pos1 = null;
 var pos2 = null;
 
+tool = lastSelected;
+
+if (tool == 'pen') {
+  document.getElementById('penTool').classList.add('selected');
+  document.getElementById('rectTool').classList.remove('selected');
+  document.getElementById('textTool').classList.remove('selected');
+  document.getElementById('eraserTool').classList.remove('selected');
+} else if (tool == 'rect') {
+  document.getElementById('penTool').classList.remove('selected');
+  document.getElementById('rectTool').classList.add('selected');
+  document.getElementById('textTool').classList.remove('selected');
+  document.getElementById('eraserTool').classList.remove('selected');
+} else if (tool == 'text') {
+  document.getElementById('penTool').classList.remove('selected');
+  document.getElementById('rectTool').classList.remove('selected');
+  document.getElementById('textTool').classList.add('selected');
+  document.getElementById('eraserTool').classList.remove('selected');
+} else if (tool == 'eraser') {
+  document.getElementById('penTool').classList.remove('selected');
+  document.getElementById('rectTool').classList.remove('selected');
+  document.getElementById('textTool').classList.remove('selected');
+  document.getElementById('eraserTool').classList.add('selected');
+}
+
 document.getElementById('penTool').addEventListener('click', () => {
   tool = 'pen';
   document.getElementById('penTool').classList.add('selected');
   document.getElementById('rectTool').classList.remove('selected');
   document.getElementById('textTool').classList.remove('selected');
   document.getElementById('eraserTool').classList.remove('selected');
+  updateSelected('pen');
 });
 document.getElementById('rectTool').addEventListener('click', () => {
   tool = 'rect';
@@ -19,6 +68,7 @@ document.getElementById('rectTool').addEventListener('click', () => {
   document.getElementById('rectTool').classList.add('selected');
   document.getElementById('textTool').classList.remove('selected');
   document.getElementById('eraserTool').classList.remove('selected');
+  updateSelected('rect');
 });
 document.getElementById('textTool').addEventListener('click', () => {
   tool = 'text';
@@ -26,6 +76,7 @@ document.getElementById('textTool').addEventListener('click', () => {
   document.getElementById('rectTool').classList.remove('selected');
   document.getElementById('textTool').classList.add('selected');
   document.getElementById('eraserTool').classList.remove('selected');
+  updateSelected('text');
 });
 
 document.getElementById('eraserTool').addEventListener('click', () => {
@@ -34,6 +85,7 @@ document.getElementById('eraserTool').addEventListener('click', () => {
   document.getElementById('rectTool').classList.remove('selected');
   document.getElementById('textTool').classList.remove('selected');
   document.getElementById('eraserTool').classList.add('selected');
+  updateSelected('eraser');
 });
 
 document.getElementById('clear').addEventListener('click', () => {
@@ -65,12 +117,8 @@ function createText(ctx, posX, posY) {
     ctx.fillText(val, posX, posY);
   });
 }
-
-function createRect(ctx, width, height, posX, posY, customColor) {
+function createRect(ctx, width, height, posX, posY) {
   ctx.fillStyle = color;
-  if (customColor) {
-    ctx.fillStyle = customColor;
-  }
   console.log(
     'Creating rectangle with width and height of',
     width,
@@ -82,6 +130,17 @@ function createRect(ctx, width, height, posX, posY, customColor) {
     posY
   );
   ctx.fillRect(posX, posY, width, height);
+}
+
+function createCircle(ctx, radius, posX, posY, customColor) {
+  ctx.fillStyle = color;
+  if (customColor) {
+    ctx.fillStyle = customColor;
+  }
+  // ctx.fillRect(posX, posY, width, height);
+  ctx.beginPath();
+  ctx.arc(posX, posY, radius, 0, 2 * Math.PI);
+  ctx.fill();
 }
 function clear(ctx, bg) {
   ctx.fillStyle = bg;
@@ -123,9 +182,9 @@ window.addEventListener('mousemove', (e) => {
   const mouseX = e.clientX;
   const mouseY = e.clientY;
   if (tool == 'pen') {
-    createRect(ctx, 20, 20, mouseX, mouseY);
+    createCircle(ctx, 20, mouseX, mouseY);
   } else if (tool == 'eraser') {
-    createRect(ctx, 20, 20, mouseX, mouseY, '#333333');
+    createCircle(ctx, 20, mouseX, mouseY, '#333333');
   } else if (tool == 'rect') {
     if (pos1 == null) {
       pos1 = { x: mouseX, y: mouseY };
@@ -146,5 +205,6 @@ clr_choise.addEventListener('change', () => {
 document.getElementById('save').addEventListener('click', () => {
   const url = canvas.toDataURL('png', 720);
   document.getElementById('overlay').src = url;
-  //   TODO: add auto download link
+  const randomNumber = Math.floor(Math.random() * 100000);
+  downloadURI(url, `your-drawing-by-@foxxo-#${randomNumber}.png`);
 });
